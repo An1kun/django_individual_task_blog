@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Profile</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        
+        <div class="form-group">
+            <label for="id_bio">Bio</label>
+            {{ form.bio|as_crispy_field }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_profile_picture">Profile Picture</label>
+            <div>
+                {% if form.profile_picture.value %}
+                    <img src="{{ form.profile_picture.value.url }}" alt="Current Profile Picture" class="img-thumbnail" width="150px">
+                    <p>Current Picture</p>
+                {% endif %}
+                {{ form.profile_picture|as_crispy_field }}
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{% url 'profile_view' request.user.username %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

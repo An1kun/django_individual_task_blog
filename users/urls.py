@@ -1,10 +1,11 @@
-from django.contrib import admin
 from django.urls import path
 from . import views
 
+urlpatterns = [
+    path('register/', views.user_registration, name='user_registration'),
+    path('profile/edit/', views.profile_edit, name='profile_edit'),
+    path('profile/<str:username>/', views.profile_view, name='profile_view'),
 
-
-urlpatterns= [
-    path('register/', views.register_view, name='register'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),]
+    path('profile/<str:username>/follow/', views.follow_user, name='follow_user'),
+    path('profile/<str:username>/unfollow/', views.unfollow_user, name='unfollow_user'),
+]

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+        {% else %}
+            <img src="{% static 'avatar.png' %}" alt="Default Profile Picture" class="profile-picture">
+        {% endif %}
+        <h2>{{ profile.user.username }}</h2>
+        <p>{{ profile.bio }}</p>
+
+        <!-- Display "Edit Profile" button if the logged-in user is viewing their own profile -->
+        {% if request.user == profile.user %}
+            <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+        {% else %}
+            <!-- Show follow/unfollow buttons for other users -->
+            {% if request.user.is_authenticated %}
+                {% if request.user in profile.user.followers.all %}
+                    <form action="{% url 'unfollow_user' profile.user.username %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Unfollow</button>
+                    </form>
+                {% else %}
+                    <form action="{% url 'follow_user' profile.user.username %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Follow</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="profile-followers">
+        <h3>Followers: {{ profile.user.followers.count }}</h3>
+        <ul>
+            {% for follower in profile.user.followers.all %}
+                <li>{{ follower.follower.username }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="profile-following">
+        <h3>Following: {{ profile.user.following.count }}</h3>
+        <ul>
+            {% for following in profile.user.following.all %}
+                <li>{{ following.following.username }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
